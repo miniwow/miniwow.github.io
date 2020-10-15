@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mini WoW</title>
+<style>
+
+* {
+  font-family: monospace;
+  color: #f8f8f2;
+  background: #282a36;
+  font-size: 16px;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+}
+
+pre {
+  font-size: 32px;
+  margin: 32px auto;
+  display: block;
+  width: 7ch;
+}
+
+h2 {
+  font-size: 18px;
+  color: #50fa7b;
+}
+
+input {
+  width: 100%;
+  padding: 0.25em 0.45em;
+  border: 0;
+  background: #1f212b;
+  border-radius: 0.25em;
+  margin: 0.5em 0;
+  border: 1px solid black;
+}
+
+input:focus {
+  color: #8be9fd;
+  border-color:#8be9fd;
+}
+
+label b {
+  margin-right: 1em;
+  color: #f1fa8c;
+}
+
+label {
+  display: flex;
+  align-items: center;
+}
+
+form i {
+  color: #6272a4;
+  font-size: 12px;
+}
+
+form {
+  flex-direction: column;
+  max-width: 38ch;
+  margin: 0 auto;
+}
+
+h2 {
+  text-align: center;
+}
+
+hr {
+  margin: 0.75em 12ch;
+  border-top: 0.25em dotted #6272a4;
+  color: transparent;
+}
+
+#success,
+#register,
+#change-password,
+#already-taken,
+#missing-session,
+#invalid-login {
+  display: none;
+}
+
+#success:target,
+#register:target,
+#change-password:target,
+#already-taken:target,
+#missing-session:target,
+#invalid-login:target {
+  display: flex;
+}
+
+#register:target + #register-link,
+#change-password:target + #change-password-link {
+  color: #6272a4;
+  text-decoration: none;
+}
+
+a {
+  display: block;
+  padding: 0.5em 0.75em;
+  color: #ff79c6;
+}
+
+#register-link { top: 3em }
+#change-password-link { top: 6em }
+#change-password-link,
+#register-link {
+  position: fixed;
+  right: 1em;
+}
+
+</style>
+</head>
+<body>
+<pre>Mini...
+.......
+....WoW</pre>
+<div id="already-taken">
+  Login already taken
+  <a href="#register">ok</a>
+</div>
+<div id="missing-session">
+  <p>Missing session</p>
+  <a href="#register">retry</a>
+</div>
+<div id="invalid-login">
+  <p>Invalid Login</p>
+  <a href="#register">ok</a>
+</div>
+<form
+  id="register"
+  method="POST"
+  enctype="application/x-www-form-urlencoded"
+  action="https://frosty-snowflake-73794.pktriot.net/authorize"
+>
+  <h2>Create your account</h2>
+  <hr>
+  <label><b>login</b><input type="text" name="login"></label>
+  <i>your login will be public and can't be changed</i>
+  <label><b>password</b><input type="password" name="password"></label>
+  <i>don't pick something stupid if you don't want to get hacked</i>
+  <hr>
+  <input type="submit" value="Create account and link discord">
+  <i>A discord account is required to join but you can play without using discord</i>
+</form>
+<a id="register-link" href="#register">Register</a>
+<form
+  id="change-password"
+  method="POST"
+  enctype="application/x-www-form-urlencoded"
+  action="https://frosty-snowflake-73794.pktriot.net/authorize"
+>
+  <h2>Change Password</h2>
+  <hr>
+  <label><b>New&nbspPassword</b><input type="password" name="password"></label>
+  <hr>
+  <input type="submit" value="Change your password">
+</form>
+<a id="change-password-link" href="#change-password">Change password</a>
+<div id="success">
+  Welcome to the server !
+</div>
+</body>
+</html>
