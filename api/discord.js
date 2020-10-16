@@ -61,10 +61,10 @@ GET("/discord", async ({ code, state }) => {
     headers: { Authorization: `${token_type} ${access_token}` },
   })
 
-  if (!nicks[id]) {
-    if (!session.login || users[session.login]) {
-      return goto('invalid-login')
-    }
+  const nick = nicks[id]
+  if (!nick) {
+    if (!session.login) return goto('invalid-login')
+    if (users[session.login]) return goto('already-taken')
 
     nicks[id] = session.login
     users[session.login] = id
@@ -87,7 +87,8 @@ GET("/discord", async ({ code, state }) => {
     },
   })
 
-  return goto(session.login ? 'welcome' : 'success')
+  if (!session.login) return goto('success')
+  return nick ? goto('already-created') : goto('welcome')
 })
 
 await serve()

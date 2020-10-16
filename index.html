@@ -4,6 +4,19 @@
   <title>Mini WoW</title>
   <meta charset="utf-8">
 <style>
+/*reset*/
+html,body,p,ol,ul,li,dl,dt,dd,blockquote,figure,fieldset,legend,
+textarea,pre,iframe,hr,h1,h2,h3,h4,h5,h6 { margin: 0; padding: 0 }
+h1,h2,h3,h4,h5,h6 { font-size: 100%; font-weight: bold }
+ul { list-style: none }
+button,input,select,textarea { margin: 0 }
+html { box-sizing: border-box }
+*,*::before,*::after { box-sizing: inherit }
+img,video { height: auto; max-width: 100% }
+iframe { border: 0 }
+table { border-collapse: collapse; border-spacing: 0 }
+td,th { padding: 0 }
+td:not([align]),th:not([align]) { text-align: left }
 
 * {
   font-family: monospace;
@@ -12,7 +25,6 @@
   font-size: 16px;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
 html, body { width: 100% }
@@ -78,6 +90,8 @@ hr {
   margin: 0.75em;
   text-align: center;
   color: transparent;
+  background: transparent;
+  border: 0;
 }
 
 body > div {
@@ -95,8 +109,9 @@ body > div {
 }
 
 #welcome:before,
-#success:before,
+#welcome:before,
 #already-taken:before,
+#already-created:before,
 #missing-session:before,
 #invalid-login:before {
   content: ':(';
@@ -109,6 +124,7 @@ body > div {
 
 #welcome:before,
 #success:before { content: ':)' }
+#already-created:before { content: ':|' }
 
 body > div,
 body > form { display: flex }
@@ -181,6 +197,15 @@ input[name=login].valid + #checker:after {
   <p>Login already taken</p>
   <a href="#register">ok</a>
 </div>
+<div id="already-created">
+  <p>
+    Account already created.
+    <br>
+    If you lost your login, you can always refer to your nickname
+    in our discord server.
+  </p>
+  <a href="#home">ok</a>
+</div>
 <div id="missing-session">
   <p>Missing session</p>
   <a href="#register">retry</a>
@@ -192,6 +217,7 @@ input[name=login].valid + #checker:after {
 <form
   id="register"
   method="POST"
+  spellcheck="false"
   enctype="application/x-www-form-urlencoded"
   action="https://frosty-snowflake-73794.pktriot.net/authorize"
 >
@@ -219,6 +245,7 @@ input[name=login].valid + #checker:after {
 <form
   id="change-password"
   method="POST"
+  spellcheck="false"
   enctype="application/x-www-form-urlencoded"
   action="https://frosty-snowflake-73794.pktriot.net/authorize"
 >
