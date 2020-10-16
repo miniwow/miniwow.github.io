@@ -3,6 +3,7 @@
 <head>
   <title>Mini WoW</title>
   <meta charset="utf-8">
+  <link rel="shortcut icon" type="image/x-icon" href="data:image/png;base64">
 <style>
 /*reset*/
 html,body,p,ol,ul,li,dl,dt,dd,blockquote,figure,fieldset,legend,
@@ -20,20 +21,37 @@ td:not([align]),th:not([align]) { text-align: left }
 
 * {
   font-family: monospace;
-  color: #f8f8f2;
-  background: #282a36;
   font-size: 16px;
   margin: 0;
   padding: 0;
+  color: #f8f8f2;
+  background: transparent;
 }
 
-html, body { width: 100% }
+html, body {
+  width: 100%;
+  background: #282a36;
+  padding-bottom: 6em;
+}
+
+article {
+  background: #1f212b;
+  border-radius: 0.5em;
+  border: 1px solid black;
+  text-align: left;
+}
 
 h2 {
   font-size: 18px;
   color: #50fa7b;
 }
 
+h3 {
+  padding: 0 1em;
+  color: #ffb86c;
+}
+
+input[type=password],
 input {
   width: 100%;
   padding: 0.25em 0.45em;
@@ -60,7 +78,7 @@ label {
   align-items: center;
 }
 
-form i {
+i {
   color: #6272a4;
   font-size: 12px;
 }
@@ -97,34 +115,38 @@ hr {
 body > div {
   flex-direction: column;
   text-align: center;
+  max-width: 65ch;
+  margin: 0 auto;
 }
 
-#logo, #logo > pre { font-size: 32px }
-#logo {
+.logo, .logo > pre { font-size: 32px }
+.logo {
   margin: 32px auto;
   display: block;
   text-decoration: none;
   width: 12ch;
   text-align: center;
+  cursor: default;
+  user-select: none;
 }
 
-#welcome:before,
-#welcome:before,
-#already-taken:before,
-#already-created:before,
-#missing-session:before,
-#invalid-login:before {
+#welcome > *:first-child:after,
+#success > *:first-child:after,
+#already-taken > *:first-child:after,
+#already-created > *:first-child:after,
+#missing-session > *:first-child:after,
+#invalid-login > *:first-child:after {
   content: ':(';
   display: block;
   font-size: 32px;
   transform: rotate(90deg);
   width: 2ch;
-  margin: 1em auto;
+  margin: 1em auto 0;
 }
 
-#welcome:before,
-#success:before { content: ':)' }
-#already-created:before { content: ':|' }
+#welcome > *:first-child:after,
+#success > *:first-child:after { content: ':)' }
+#already-created > *:first-child:after { content: ':|' }
 
 body > div,
 body > form { display: flex }
@@ -136,9 +158,10 @@ body > form:not(:target) { display: none }
 #change-password:target + #change-password-link {
   color: #6272a4;
   text-decoration: none;
+  cursor: default;
 }
 
-a {
+a:not(.logo) {
   display: block;
   padding: 0.5em 0.75em;
   color: #ff79c6;
@@ -190,14 +213,19 @@ input[name=login].valid + #checker:after {
 </style>
 </head>
 <body>
-<a href="#home" id="logo"><pre>Mini...
+
+<div id="already-taken">
+  <a href="#home" class="logo"><pre>Mini...
 .......
 ....WoW</pre></a>
-<div id="already-taken">
   <p>Login already taken</p>
   <a href="#register">ok</a>
 </div>
+
 <div id="already-created">
+  <a href="#home" class="logo"><pre>Mini...
+.......
+....WoW</pre></a>
   <p>
     Account already created.
     <br>
@@ -206,14 +234,23 @@ input[name=login].valid + #checker:after {
   </p>
   <a href="#home">ok</a>
 </div>
+
 <div id="missing-session">
+  <a href="#home" class="logo"><pre>Mini...
+.......
+....WoW</pre></a>
   <p>Missing session</p>
   <a href="#register">retry</a>
 </div>
+
 <div id="invalid-login">
+  <a href="#home" class="logo"><pre>Mini...
+.......
+....WoW</pre></a>
   <p>Invalid Login</p>
   <a href="#register">ok</a>
 </div>
+
 <form
   id="register"
   method="POST"
@@ -221,6 +258,9 @@ input[name=login].valid + #checker:after {
   enctype="application/x-www-form-urlencoded"
   action="https://frosty-snowflake-73794.pktriot.net/authorize"
 >
+  <a href="#home" class="logo"><pre>Mini...
+.......
+....WoW</pre></a>
   <h2>Create your account</h2>
   <hr>
   <label>
@@ -242,6 +282,7 @@ input[name=login].valid + #checker:after {
   </i>
 </form>
 <a id="register-link" href="#register">Register</a>
+
 <form
   id="change-password"
   method="POST"
@@ -249,6 +290,9 @@ input[name=login].valid + #checker:after {
   enctype="application/x-www-form-urlencoded"
   action="https://frosty-snowflake-73794.pktriot.net/authorize"
 >
+  <a href="#home" class="logo"><pre>Mini...
+.......
+....WoW</pre></a>
   <h2>Change Password</h2>
   <hr>
   <label><b>New&nbspPassword</b><input type="password" name="password"></label>
@@ -256,19 +300,72 @@ input[name=login].valid + #checker:after {
   <input type="submit" value="Change your password">
 </form>
 <a id="change-password-link" href="#change-password">Change password</a>
+
 <div id="welcome">
+  <a href="#home" class="logo"><pre>Mini...
+.......
+....WoW</pre></a>
   <h2>Welcome !</h2>
   <p>You have joined to the server.
     <br>You can now look around in the discord and connect ingame</p>
   <a href="#home">ok</a>
 </div>
+
 <div id="success">
+  <div class="logo"><pre>Mini...
+.......
+....WoW</pre></div>
   <h2>The opperation was a success.</h2>
   <hr>
   <a href="#home">ok</a>
 </div>
+
 <div id="home">
-  <i>A nice server</i>
+  <div class="logo"><pre>Mini...
+.......
+....WoW</pre></div>
+  <h2>A Fun PvP Private Server</h2>
+  <hr>
+  <i>
+    Distilling the essence of World of Warcraft PvP
+    so everyone can feel it's intoxication
+  </i>
+  <hr>
+  <article>
+    <p>
+      MiniWoW is an attempt to make WoW PvP more accessible
+      without loosing the fun of it.
+    </p>
+    <h3>Only 9 spells</h3>
+    <p>
+      Limiting the amount of available spells and basing the play
+      style off old school twink PvP will force players
+      to make the most out of the tools they get.
+    </p>
+    <h3>Choice of build</h3>
+    <p>
+      At the begining, we will focus the play tests on a single build
+      per classes, but we plan to allow players to freely switch what spells
+      they uses.
+      <br>
+      This should give depth and allow players to innovate uppon the stale
+      meta of warth of the lich king while keep using the beloved spells
+      of this era.
+    </p>
+  </article>
+  <hr>
+  <p>3.3.5 | <b>PvP only</b> | Instant</p>
+  <p>
+    Learn more:
+    <a
+      style="display: inline;margin: 0;padding: 0"
+      href="https://docs.google.com/spreadsheets/d/1E8sva7kjFtcM8FRr06KyDwmV1aEqZzxsXoFuWhTyv8M/edit?usp=sharing">
+      Working Draft Sheet
+    </a>
+  </p>
+  <hr>
+  <a href="#register">Register</a>
+  <hr>
 </div>
 </body>
 <script>
