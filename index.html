@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Mini WoW</title>
+  <meta charset="utf-8">
 <style>
 
 * {
@@ -13,16 +14,7 @@
   padding: 0;
 }
 
-html, body {
-  width: 100%;
-}
-
-pre {
-  font-size: 32px;
-  margin: 32px auto;
-  display: block;
-  width: 7ch;
-}
+html, body { width: 100% }
 
 h2 {
   font-size: 18px;
@@ -42,6 +34,7 @@ input {
 input:focus {
   color: #8be9fd;
   border-color:#8be9fd;
+  outline: 0;
 }
 
 label b {
@@ -65,33 +58,61 @@ form {
   margin: 0 auto;
 }
 
-h2 {
-  text-align: center;
+p {
+  line-height: 1.75em;
+  margin: 1em;
+}
+
+h2 { text-align: center }
+
+hr:before {
+  font-size: 12px;
+  content: '•••••••••';
+  letter-spacing: 2px;
+  color: #6272a4;
+  display: block;
 }
 
 hr {
-  margin: 0.75em 12ch;
-  border-top: 0.25em dotted #6272a4;
+  margin: 0.75em;
+  text-align: center;
   color: transparent;
 }
 
-#success,
-#register,
-#change-password,
-#already-taken,
-#missing-session,
-#invalid-login {
-  display: none;
+body > div {
+  flex-direction: column;
+  text-align: center;
 }
 
-#success:target,
-#register:target,
-#change-password:target,
-#already-taken:target,
-#missing-session:target,
-#invalid-login:target {
-  display: flex;
+#logo, #logo > pre { font-size: 32px }
+#logo {
+  margin: 32px auto;
+  display: block;
+  text-decoration: none;
+  width: 7ch;
 }
+
+#welcome:before,
+#success:before,
+#already-taken:before,
+#missing-session:before,
+#invalid-login:before {
+  content: ':(';
+  display: block;
+  font-size: 32px;
+  transform: rotate(90deg);
+  width: 2ch;
+  margin: 1em auto;
+}
+
+#welcome:before,
+#success:before { content: ':)' }
+
+body > div,
+body > form { display: flex }
+
+body > div:not(:target),
+body > form:not(:target) { display: none }
 
 #register:target + #register-link,
 #change-password:target + #change-password-link {
@@ -113,14 +134,46 @@ a {
   right: 1em;
 }
 
+input[name=login] {
+  border-radius: 0.25em 0 0 0.25em;
+  border-right: 0;
+}
+
+#checker:after {
+  display: block;
+  content: '•';
+  border-radius: 0 0.25em 0.25em 0;
+  background: #14151c;
+  padding: 0.25em 0.45em;
+  border: 1px solid black;
+  border-left: 0;
+  color: transparent;
+}
+
+input[name=login]:focus + #checker:after {
+  border-color: #8be9fd;
+  color: #ff5555;
+  content: '✗';
+}
+
+input[name=login].checking + #checker:after {
+  color: #6272a4;
+  content: '•';
+}
+
+input[name=login].valid + #checker:after {
+  color: #50fa7b;
+  content: '✔';
+}
+
 </style>
 </head>
 <body>
-<pre>Mini...
+<a href="#home" id="logo"><pre>Mini...
 .......
-....WoW</pre>
+....WoW</pre></a>
 <div id="already-taken">
-  Login already taken
+  <p>Login already taken</p>
   <a href="#register">ok</a>
 </div>
 <div id="missing-session">
@@ -139,13 +192,23 @@ a {
 >
   <h2>Create your account</h2>
   <hr>
-  <label><b>login</b><input type="text" name="login"></label>
-  <i>your login will be public and can't be changed</i>
+  <label>
+    <b>login</b>
+    <input type="text" name="login">
+    <span id="checker"></span>
+  </label>
+  <i>
+    Only Letters and numbers, no accents.
+    Your login will be public and can't be changed
+  </i>
   <label><b>password</b><input type="password" name="password"></label>
   <i>don't pick something stupid if you don't want to get hacked</i>
   <hr>
   <input type="submit" value="Create account and link discord">
-  <i>A discord account is required to join but you can play without using discord</i>
+  <i>
+    A discord account is required to join
+    but you can play without using discord
+  </i>
 </form>
 <a id="register-link" href="#register">Register</a>
 <form
@@ -161,8 +224,57 @@ a {
   <input type="submit" value="Change your password">
 </form>
 <a id="change-password-link" href="#change-password">Change password</a>
+<div id="welcome">
+  <h2>Welcome !</h2>
+  <p>You have joined to the server.
+    <br>You can now look around in the discord and connect ingame</p>
+  <a href="#home">ok</a>
+</div>
 <div id="success">
-  Welcome to the server !
+  <h2>The opperation was a success.</h2>
+  <hr>
+  <a href="#home">ok</a>
+</div>
+<div id="home">
+  <i>A nice server</i>
 </div>
 </body>
+<script>
+addEventListener('hashchange', (function u() {
+  const id = location.hash.slice(1)
+  id && [...document.body.children].find(e => e.id === id)
+  || document.getElementById('logo').click()
+  return u
+})())
+
+// check login as you type
+const baseURL = 'https://frosty-snowflake-73794.pktriot.net'
+const loginInput = document.querySelector('input[name=login]')
+const fetchLogin = async () => {
+  const login = loginInput.value
+  if (loginInput.previousValue === login) return
+  loginInput.classList.remove('valid')
+  loginInput.previousValue = login
+  if (login.length < 3 || !/^[A-Za-z0-9]+$/.test(login)) return
+  const res = await fetch(`${baseURL}/id?login=${login}`)
+  const id = await res.text()
+  if (loginInput.value !== login) return true // recheck
+  loginInput.classList.toggle('valid', !id)
+}
+
+const check = () => {
+  if (loginInput.classList.contains('checking')) return
+  loginInput.classList.add('checking')
+  requestAnimationFrame(() => fetchLogin()
+    .finally(() => loginInput.classList.remove('checking'))
+    .then(recheck => recheck && check()))
+}
+
+loginInput.onkeydown = check
+loginInput.onchange = check
+loginInput.onpaste = check
+
+check()
+
+</script>
 </html>

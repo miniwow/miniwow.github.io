@@ -5,7 +5,7 @@ import {
   DISCORD_BOT_TOKEN,
 } from "./args.js"
 import { GET, POST, boom, serve, json, redirect } from "./serve.js"
-import { curl, mapEntries } from "./lib.js"
+import { curl, rand, mapEntries } from "./lib.js"
 
 const scope = "identify guilds.join"
 const apiUrl = "https://discord.com/api"
@@ -20,14 +20,15 @@ const nicks = await Deno.readTextFile("./nicks.json")
 
 const users = mapEntries(nicks, ([k,v]) => [v,k])
 const sessions = new Map()
-const rand = () => Math.random().toString(36).slice(3, 12).padStart(9, '0')
-GET("/id", ({ login }) => users[login])
+const CORS = new Headers()
+CORS.set("Access-Control-Allow-Origin", 'https://miniwow.github.io')
+GET("/id", ({ login }) => ({ headers: CORS, body: users[login] || '' }))
 
 const goto = view => redirect(`https://miniwow.github.io/#${view}`)
 POST("/authorize", ({ login, password }) => {
   if (login && users[login]) return goto('already-taken')
 
-  const state = rand()
+  const state = rand(9)
   sessions.set(state, { login, password })
   return redirect(`${apiUrl}/oauth2/authorize?${new URLSearchParams({
     client_id: DISCORD_CLIENT,
@@ -60,7 +61,7 @@ GET("/discord", async ({ code, state }) => {
     headers: { Authorization: `${token_type} ${access_token}` },
   })
 
-  if (!users[id]) {
+  if (!nicks[id]) {
     if (!session.login || users[session.login]) {
       return goto('invalid-login')
     }
@@ -81,12 +82,12 @@ GET("/discord", async ({ code, state }) => {
     },
     body: {
       access_token,
-      nick: users[id],
+      nick: nicks[id],
       roles: ["766288504690442240"],
     },
   })
 
-  return goto('success')
+  return goto(session.login ? 'welcome' : 'success')
 })
 
 await serve()
