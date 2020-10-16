@@ -78,7 +78,11 @@ label {
   align-items: center;
 }
 
-i {
+i a:not(.logo) {
+  display: inline;
+  padding: 0;
+}
+i a:not(.logo), i {
   color: #6272a4;
   font-size: 12px;
 }
@@ -366,13 +370,19 @@ input[name=login].valid + #checker:after {
   <hr>
   <a href="#register">Register</a>
   <hr>
+  <i>
+    Everything is open-source.
+    <br>
+    You are welcome to use any code or contribute on the
+    <a href="https://github.com/miniwow">github repository</a>.
+  </i>
 </div>
 </body>
 <script>
 addEventListener('hashchange', (function u() {
   const id = location.hash.slice(1)
   id && [...document.body.children].find(e => e.id === id)
-  || document.getElementById('logo').click()
+  || document.getElementsByClassName('logo')[0].click()
   return u
 })())
 
