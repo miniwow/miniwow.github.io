@@ -5,10 +5,12 @@ import {
   DISCORD_BOT_TOKEN,
 } from "./args.js"
 import { GET, POST, boom, serve, json, redirect } from "./serve.js"
+import { exec } from "./console.js"
 import { curl, rand, mapEntries } from "./lib.js"
 
 const scope = "identify guilds.join"
 const apiUrl = "https://discord.com/api"
+const discordRoleId = "766288504690442240"
 const discordGuildId = "766249759631343616"
 const nicks = await Deno.readTextFile("./nicks.json")
   .then(JSON.parse)
@@ -24,10 +26,9 @@ const CORS = new Headers()
 CORS.set("Access-Control-Allow-Origin", 'https://miniwow.github.io')
 GET("/id", ({ login }) => ({ headers: CORS, body: users[login] || '' }))
 
-const goto = view => redirect(`https://miniwow.github.io/#${view}`)
+const go = view => redirect(`https://miniwow.github.io/#${view}`)
 POST("/authorize", ({ login, password }) => {
-  if (login && users[login]) return goto('already-taken')
-
+  if (login && users[login]) return go('already-taken')
   const state = rand(9)
   sessions.set(state, { login, password })
   return redirect(`${apiUrl}/oauth2/authorize?${new URLSearchParams({
@@ -41,7 +42,7 @@ POST("/authorize", ({ login, password }) => {
 
 GET("/discord", async ({ code, state }) => {
   const session = sessions.get(state)
-  if (!session) return goto('missing-session')
+  if (!session) return go('missing-session')
   sessions.delete(state)
 
   const { access_token, token_type } = await curl(`${apiUrl}/oauth2/token`, {
@@ -63,15 +64,15 @@ GET("/discord", async ({ code, state }) => {
 
   const nick = nicks[id]
   if (!nick) {
-    if (!session.login) return goto('invalid-login')
-    if (users[session.login]) return goto('already-taken')
+    if (!session.login) return go('invalid-login')
+    if (users[session.login]) return go('already-taken')
 
     nicks[id] = session.login
     users[session.login] = id
-    // TODO: register to the game server
+    await exec(`account create ${session.login} ${session.password}`)
     await Deno.writeTextFile("./nicks.json", JSON.stringify(nicks))
   } else {
-    session.password // TODO: change password
+    await exec(`account set password ${nick} ${session.password} ${session.password}`)
   }
 
   await curl(`${apiUrl}/guilds/${discordGuildId}/members/${id}`, {
@@ -83,12 +84,12 @@ GET("/discord", async ({ code, state }) => {
     body: {
       access_token,
       nick: nicks[id],
-      roles: ["766288504690442240"],
+      roles: [discordRoleId],
     },
   })
 
-  if (!session.login) return goto('success')
-  return nick ? goto('already-created') : goto('welcome')
+  if (!session.login) return go('success')
+  return nick ? go('already-created') : go('welcome')
 })
 
 await serve()
