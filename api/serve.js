@@ -1,9 +1,9 @@
-import { serve as httpServe } from "https://deno.land/std@0.74.0/http/server.ts"
+import { serveTLS } from "https://deno.land/std@0.74.0/http/server.ts"
 import { Status } from "https://deno.land/std@0.74.0/http/http_status.ts"
 import { green, cyan, bold } from "https://deno.land/std@0.74.0/fmt/colors.ts"
 
 import { mapValues } from "./lib.js"
-import { PORT } from "./args.js"
+import { DOMAIN, TLS_PORT, TLS_CERT, TLS_KEY } from "./args.js"
 
 const routes = {}
 const contentTypeHeader = type => {
@@ -99,8 +99,14 @@ export const GET = addRoute("GET")
 export const route = { DELETE, PATCH, POST, PUT, GET }
 
 export const serve = async () => {
-  console.log(cyan(bold("Listen")), `http://localhost:${PORT}`)
-  for await (const req of httpServe({ port: PORT })) {
+  console.log(cyan(bold("Listen")), `https://${DOMAIN}`)
+  const tlsOptions = {
+    port: TLS_PORT,
+    keyFile: TLS_KEY,
+    certFile: TLS_CERT,
+  }
+  // TODO: add redirect for non TLS
+  for await (const req of serveTLS(tlsOptions)) {
     handleRequest(req, routes).then(
       body =>
         req.respond(
