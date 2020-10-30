@@ -33,7 +33,7 @@ POST("/authorize", ({ login, password }) => {
   sessions.set(state, { login, password })
   return redirect(`${apiUrl}/oauth2/authorize?${new URLSearchParams({
     client_id: DISCORD_CLIENT,
-    redirect_uri: `${DOMAIN}/discord`,
+    redirect_uri: `https://${DOMAIN}/discord`,
     response_type: "code",
     scope,
     state,
@@ -52,7 +52,7 @@ GET("/discord", async ({ code, state }) => {
       client_id: DISCORD_CLIENT,
       client_secret: DISCORD_SECRET,
       grant_type: "authorization_code",
-      redirect_uri: `${DOMAIN}/discord`,
+      redirect_uri: `https://${DOMAIN}/discord`,
       scope,
       code,
     },
