@@ -3,6 +3,7 @@ export const rand = n => Math.random().toString(36).slice(2, n + 2).padStart(n, 
 export const mapEntries = (obj, fn) => Object.fromEntries(Object.entries(obj).map(fn))
 export const mapValues = (obj, fn) => mapEntries(obj, ([k, v]) => [k, fn(v, k, obj)])
 export const curl = async (url, params) => {
+  console.log(url, params)
   if (params.body && typeof params.body !== 'string') {
     const headers = params.headers || (params.headers = {})
     const type = headers['content-type'] || headers['Content-Type']

@@ -81,16 +81,16 @@ export const
 }
 
 export const statTypes = {
-  int: { type: 5, rate: 1 },
-  str: { type: 4, rate: 1 },
-  agi: { type: 3, rate: 1 },
-  stam: { type: 7, rate: 1.5 },
-  spi: { type: 6, rate: 1 },
-  hast: { type: 36, rate: 1 },
-  crit: { type: 32, rate: 1 },
-  AP: { type: 38, rate: 2 },
-  SP: { type: 45, rate: 1 },
-  MP5: { type: 43, rate: 0.5 },
+  MP5: 43,  // 0.5
+  SP: 45,   // 1
+  int: 5,   // 1
+  str: 4,   // 1
+  agi: 3,   // 1
+  spi: 6,   // 1
+  hast: 36, // 1
+  crit: 32, // 1
+  stam: 7,  // 1.5
+  AP: 38,   // 2
   // 37 ITEM_MOD_EXPERTISE_RATING
   // 44 ITEM_MOD_ARMOR_PENETRATION_RATING
   // 31 ITEM_MOD_HIT_RATING
@@ -102,3 +102,135 @@ export const statTypes = {
 
 
 export const qualities = { junk: 0, common: 1, uncommon: 2, rare: 3, epic: 4, legendary: 5 }
+
+export const ARMOR = 65.55
+export const CLOTH = 1
+export const MAIL = 4.175
+export const PLATE = 7.45
+export const LEATHER = 1.875
+export const DPS = 43.5
+export const S = 1000
+export const M = 60*S
+
+let classMask = 0
+export const use = mask => classMask = mask
+export const queries = []
+export const items = startOutfit.map(itemId => ({ itemId, count: -1 }))
+export const skills = []
+export const actions = []
+export const passives = []
+
+export const formOffset = [0, 72, 84, 96]
+export const item = (itemId, count = 1) => items.push({classMask, itemId, count})
+export const skill = skillId => skills.push(`(0, ${classMask}, ${skillId})`)
+export const passive = spellId => passives.push(`(0, ${classMask}, ${spellId})`)
+export const spell = passive
+export const action = (spellId, { forms = [0], ...overrides } = {}) => {
+  passive(spellId)
+  for (const offsetId of forms) {
+    const offset = formOffset[offsetId]
+    const position = actions.filter(a =>
+      a.classMask === classMask &&
+      a.button >= offset &&
+      a.button < (offset + 12)
+    ).length
+
+    if (position >= 12) throw Error(`bar ${offsetId} full`)
+    actions.push({ id: spellId, classMask, button: offset + position, type: 0, ...overrides })
+  }
+}
+
+action.item = (itemId, count = 1) => {
+  const position = actions.filter(a => a.type === 128).length
+  for (const { mask } of Object.values(classes)) {
+    items.push({ classMask: mask, itemId, count })
+    actions.push({ id: itemId, classMask: mask, button: 58 - position, type: 128 })
+  }
+}
+
+export const buildStat = ([k, v], i) => [
+  `stat_type${i+1}=${statTypes[k]}`,
+  `stat_value${i+1}=${v}`,
+]
+
+export const buildEffect = ([k, v], i) => [
+  `spellid_${i+1}=${v}`,
+  `spelltrigger_${i+1}=1`,
+]
+
+export const editedItems = []
+export const createItem = (id, props) => {
+  const {
+    use,
+    name,
+    gems,
+    armor,
+    quality,
+    category,
+    description,
+    cooldown = -1,
+  } = props
+
+  const effects = Object.entries(props.effects||{})
+  const stats = Object.entries(props.stats||{})
+  const n = effects.length+1
+  queries.push(`UPDATE world.item_template SET ${[
+    name == null || `name='${name}'`,
+    armor == null || `armor=${armor}`,
+    quality == null || `quality=${qualities[quality]}`,
+    description == null || `description='${description}'`,
+    ...stats.map(buildStat),
+    `StatsCount=${stats.length}`,
+    ...effects.map(buildEffect),
+    gems == null || [...Array(gems).keys()].flatMap(i => [
+      `socketColor_${i}=4`,
+      `socketContent_${i}=1`,
+    ]),
+    use == null || [
+      `spellid_${n}=${use}`,
+      `spelltrigger_${n}=0`,
+      `spellcharges_${n}=0`,
+      category == null || `spellcategory_${n}=${category}`,
+      category == null || `spellcategorycooldown_${n}=${cooldown}`,
+      `spellcooldown_${n}=${cooldown}`,
+    ],
+  ].flat().filter(s => typeof s === 'string').join(', ')} WHERE entry=${id}`)
+  if (editedItems.includes(id)) throw Error(`item ${id} already edited`)
+  editedItems.push(id)
+  return id
+}
+
+export const forEachRaces = data =>
+  data.flatMap(d =>
+    d.classMask
+      ? classes[d.classMask].races.map(race => ({ race, ...d }))
+      : Object.values(classes).flatMap(({ races, mask }) => races.map(race => ({ ...d, race, classMask: mask })))
+  )
+
+
+const slotArmor = Object.entries({
+  1: 1.3, // Head
+  3: 1.2, // Shoulder
+  5: 1.6, // Chest
+  6: 0.9, // Waist
+  7: 1.4, // Legs
+  8: 1.1, // Feet
+  9: 0.7, // Wrists
+  10: 1.0, // Hands
+  20: 1.6, // Robe
+})
+
+// normalize armor
+for (const [type, typeMod] of Object.entries({ 1: CLOTH, 2: LEATHER, 3: MAIL, 4: PLATE })) {
+  for (const [slot, slotMod] of slotArmor) {
+    queries.push(`UPDATE world.item_template SET armor=${Math.round(ARMOR*typeMod*slotMod)} WHERE InventoryType=${slot} AND subclass=${type}`)
+  }
+}
+
+export const dmg = (delay, mod) => {
+  const base = (DPS*mod)*(delay/1000)
+  return `dmg_min1=${Math.round(base*0.8)}, dmg_max1=${Math.round(base*1.2)}, delay=${delay}`
+}
+
+export const tabardEntries = Object.values(classes)
+  .flatMap(({ races, mask }) => races.map(race => ({ itemId: tabards[race], count: 1, race, classMask: mask })))
