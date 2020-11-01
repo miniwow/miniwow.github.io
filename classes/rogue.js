@@ -1,4 +1,14 @@
-import { action, skill, passive, item, createItem } from './wow-data.js'
+import { action, skill, spell, passive, item, createItem } from '../api/wow-data.js'
+
+// action() // Ambush
+// action() // Sprint
+// action() // Backstab
+// action() // Kidney Shot
+// action() // Eviscerate
+// action() // Kick
+// action() // Vanish
+// action() // Gouge
+action(36554) // Shadowstep
 
 // Weapons
 skill(118) // Dual Wield
@@ -8,6 +18,10 @@ skill(173) // Daggers
 // skill(38) // Combat
 // skill(39) // Subtlety
 // skill(253) // Assassination
+passive(58415) // Filthy Tricks (Shadowstep cost no energy and -10s CD)
+
+// Stealth
+// spell()
 
 // Starting Gear
 item(createItem(22718, { // Head
@@ -55,7 +69,7 @@ item(createItem(15057, { // Legs
 item(createItem(23073, { // Feets
   name: 'Starter Boots',
   quality: 'uncommon',
-  stats: { stam: 24, agi: 16 },
+  stats: { stam: 24, agi: 16, hit: 80 },
 }))
 
 item(createItem(31758, { // Main Hand

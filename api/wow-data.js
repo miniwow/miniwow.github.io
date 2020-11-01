@@ -91,6 +91,7 @@ export const statTypes = {
   crit: 32, // 1
   stam: 7,  // 1.5
   AP: 38,   // 2
+  hit: 31,  // 1
   // 37 ITEM_MOD_EXPERTISE_RATING
   // 44 ITEM_MOD_ARMOR_PENETRATION_RATING
   // 31 ITEM_MOD_HIT_RATING

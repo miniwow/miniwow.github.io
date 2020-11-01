@@ -2,7 +2,7 @@ import {
   MAGE, ROGUE, DRUID, HUNTER, PRIEST, SHAMAN, WARRIOR, PALADIN, WARLOCK,
   action, createItem, item, passive, spell, use, skill,
   M, S,
-} from './wow-data.js'
+} from '../api/wow-data.js'
 
 // For everyone
 skill(95)  // Defense
@@ -18,7 +18,7 @@ passive(81)    // Dodge
 passive(14777) // Meditation (+50% mana regen while casting)
 passive(18464) // Arcane Meditation (+50% mana regen while casting)
 
-action(58648, { button: 59 }) // refreshement (food & drink)
+action(44166, { button: 59 }) // refreshement (food & drink)
 
 action.item(createItem(34722, { // Bandage
   name: 'Never-ending Bandage',
@@ -49,7 +49,7 @@ item(createItem(10120, {
 // ring caster
 
 use(HUNTER + PALADIN + SHAMAN + WARRIOR + ROGUE)
-skill(3127) // Parry
+passive(3127) // Parry
 
 use(MAGE + DRUID + WARLOCK + PRIEST)
 skill(136) // Staves

@@ -1,4 +1,4 @@
-import { action, skill, spell, passive, item, createItem } from './wow-data.js'
+import { action, skill, spell, passive, item, createItem } from '../api/wow-data.js'
 
 const ARM = 1, DEF = 2, BER = 3
 action(11578, { forms: [DEF, BER, ARM] }) // Charge
@@ -19,6 +19,7 @@ spell(2457) // Battle Stance
 spell(2458) // Berserker Stance
 
 // Passives
+passive(3127)  // Parry
 passive(57499) // Warbringer (charge in combat)
 passive(12677) // Tactical Mastery (15 rage left on switch stance)
 passive(58097) // Glyph of Charge (better range on charge)
@@ -34,9 +35,12 @@ passive(20121) // Conviction (+5 % crit)
 passive(29859) // Blood Frenzy (10% haste + 4% damage to bleeding targets)
 passive(37535) // Mortal Strike Discount (-5 cost)
 passive(45471) // Defiance Expertise Passive (DND)
+passive(12296) // Anger Manadgement (gain rage in combat)
+passive(12727) // Generate Rage on dodge & parry
+passive(29623) // Endless Rage (+25% rage)
 
 // Starting Gear
-item(createItem(10207, {  // helm
+item(createItem(10207, { // helm
   name: 'Starter Crown',
   quality: 'uncommon',
   stats: { stam: 24, str: 16, crit: 16 },
@@ -87,7 +91,7 @@ item(createItem(25956, { // wrist
 item(createItem(24064, { // feet
   name: 'Starter Sabatons',
   quality: 'uncommon',
-  stats: { stam: 24, str: 16 },
+  stats: { stam: 24, str: 16, hit: 80 },
 }))
 
 

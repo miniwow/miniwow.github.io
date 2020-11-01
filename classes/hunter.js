@@ -1,4 +1,4 @@
-import { action, skill, spell, passive, item, createItem } from './wow-data.js'
+import { action, skill, spell, passive, item, createItem } from '../api/wow-data.js'
 
 // skill(51)  // Survival
 // skill(50)  // Beast Mastery

@@ -38,6 +38,7 @@ import {
 // spell absorb: 70845 (10s)
 // spell absorb: 71586 (10s, 6400 dmg)
 // spell heal: 43821 (8s)
+// handle deco instant
 
 await import('../classes/common.js')
 

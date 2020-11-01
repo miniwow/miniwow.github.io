@@ -1,4 +1,4 @@
-import { action, skill, spell, passive, item, createItem } from './wow-data.js'
+import { action, skill, spell, passive, item, createItem } from '../api/wow-data.js'
 
 const CAT = 1, BEAR = 3
 action(5215,  { forms: [CAT] }) // Prowl
@@ -97,7 +97,7 @@ item(createItem(22108, { // wrist
 item(createItem(22107, { // feet
   name: 'Starter Boots',
   quality: 'uncommon',
-  stats: { stam: 24, agi: 16 },
+  stats: { stam: 24, agi: 16, hit: 120 },
 }))
 
 

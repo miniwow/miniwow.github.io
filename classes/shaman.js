@@ -1,4 +1,4 @@
-import { action, skill, passive, item, createItem } from './wow-data.js'
+import { action, skill, spell, passive, item, createItem } from '../api/wow-data.js'
 
 // Weapons
 skill(54) // Maces
