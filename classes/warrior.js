@@ -35,9 +35,8 @@ passive(20121) // Conviction (+5 % crit)
 passive(29859) // Blood Frenzy (10% haste + 4% damage to bleeding targets)
 passive(37535) // Mortal Strike Discount (-5 cost)
 passive(45471) // Defiance Expertise Passive (DND)
-passive(12296) // Anger Manadgement (gain rage in combat)
 passive(12727) // Generate Rage on dodge & parry
-passive(29623) // Endless Rage (+25% rage)
+// passive(29623) // Endless Rage (+25% rage)
 
 // Starting Gear
 item(createItem(10207, { // helm
@@ -125,6 +124,7 @@ item(createItem(51805, {
     35449, // Improved Mortal Strike
     20503, // Improved Execute
     29792, // Focused Rage
+    12296, // Anger Manadgement (gain rage in combat)
     20266, // Divine Strength (+ 15% strength)
   ]
 }))
