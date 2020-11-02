@@ -139,6 +139,7 @@ body > div {
 #already-taken > *:first-child:after,
 #already-created > *:first-child:after,
 #missing-session > *:first-child:after,
+#invalid-password > *:first-child:after,
 #invalid-login > *:first-child:after {
   content: ':(';
   display: block;
@@ -255,6 +256,14 @@ input[name=login].valid + #checker:after {
   <a href="#register">ok</a>
 </div>
 
+<div id="invalid-password">
+  <a href="#home" class="logo"><pre>Mini...
+.......
+....WoW</pre></a>
+  <p>Invalid Password</p>
+  <a href="#register">ok</a>
+</div>
+
 <form
   id="register"
   method="POST"
@@ -269,14 +278,17 @@ input[name=login].valid + #checker:after {
   <hr>
   <label>
     <b>login</b>
-    <input type="text" name="login">
+    <input type="text" name="login" pattern="^[^a-zA-Z0-9_]+$">
     <span id="checker"></span>
   </label>
   <i>
     Only Letters and numbers, no accents.
     Your login will be public and can't be changed
   </i>
-  <label><b>password</b><input type="password" name="password"></label>
+  <label>
+    <b>password</b>
+    <input type="password" name="password" pattern="^[ -~]+$">
+  </label>
   <i>don't pick something stupid if you don't want to get hacked</i>
   <hr>
   <input type="submit" value="Create account and link discord">
@@ -299,7 +311,10 @@ input[name=login].valid + #checker:after {
 ....WoW</pre></a>
   <h2>Change Password</h2>
   <hr>
-  <label><b>New&nbspPassword</b><input type="password" name="password"></label>
+  <label>
+    <b>New&nbspPassword</b>
+    <input type="password" name="password" pattern="^[ -~]+$">
+  </label>
   <hr>
   <input type="submit" value="Change your password">
 </form>

@@ -29,6 +29,8 @@ GET("/id", ({ login }) => ({ headers: CORS, body: users[login] || '' }))
 const go = view => redirect(`https://miniwow.github.io/#${view}`)
 POST("/authorize", ({ login, password }) => {
   if (login && users[login]) return go('already-taken')
+  if (/[^ -~]+/g.test(password)) return go('invalid-password')
+  if (login && /^[^a-zA-Z0-9_]+$/.test(login)) return go('invalid-login')
   const state = rand(9)
   sessions.set(state, { login, password })
   return redirect(`${apiUrl}/oauth2/authorize?${new URLSearchParams({
